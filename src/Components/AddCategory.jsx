@@ -3,40 +3,35 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const AddCategory = () => {
+    const [category, setCategory] = useState()
+    const navigate = useNavigate()
 
-     const [category, setCategory] = useState()
-     const navigate = useNavigate()
-
-     const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         axios.post('http://localhost:3000/auth/add_category', {category})
         .then(result => {
-            if(result.data.Status){
+            if(result.data.Status) {
                 navigate('/dashboard/category')
-            }else {
+            } else {
                 alert(result.data.Error)
             }
         })
         .catch(err => console.log(err))
-     }
-    
+    }
   return (
     <div className='d-flex justify-content-center align-items-center h-75'>
-    <div className='p-3 rounded w-25 border '>
-
-        <h2>Adicionar Categoria</h2>
-
-        <form onSubmit={handleSubmit}>      
-            <div className='mb-3'>
-                <label htmlFor="category"><strong>Categoria</strong></label>
-                <input type="text" name='category'  placeholder='Digite a Categoria'
-                onChange={(e) => setCategory(e.target.value)} className='form-control rounded-0' />
-            </div>
-         
-            <button className='btn btn-sucess w-100 rounded-0 mb-2'>Adicionar</button>
-        </form>
+        <div className='p-3 rounded w-25 border'>
+            <h2>Adicionar Função</h2>
+            <form onSubmit={handleSubmit}>
+                <div className='mb-3'>
+                    <label htmlFor="category"><strong>Função</strong></label>
+                    <input type="text" name='category' placeholder='Adicione o Função'
+                     onChange={(e) => setCategory(e.target.value)} className='form-control rounded-0'/>
+                </div>
+                <button className='btn btn-success w-100 rounded-0 mb-2'>Adicionar</button>
+            </form>
+        </div>
     </div>
-</div>
   )
 }
 

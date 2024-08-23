@@ -29,3 +29,14 @@ img {
     background-color: rgba(2, 65, 47, 0.9);
 }
 
+.employee_image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.empImg {
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+}

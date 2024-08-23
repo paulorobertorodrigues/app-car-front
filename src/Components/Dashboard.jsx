@@ -1,9 +1,33 @@
-import React from 'react'
-import { Link, Outlet } from 'react-router-dom';
-import "bootstrap-icons/font/bootstrap-icons.css";
+import React, { useEffect } from 'react'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
+function Dashboard() {
+	const navigate = useNavigate()
+	axios.defaults.withCredentials = true;
+	useEffect(()=>{
+		axios.get('http://localhost:8081/dashboard')
+		.then(res => {
+			if(res.data.Status === "Success") {
+				if(res.data.role === "admin") {
+					navigate('/');
+				} else {
+					const id = res.data.id;
+					navigate('/employeedetail/'+id)
+				}
+			} else {
+				navigate('/start')
+			}
+		})
+	}, [])
 
-const Dashboard = () => {
+	const handleLogout = () => {
+		axios.get('http://localhost:8081/logout')
+		.then(res => {
+			navigate('/start')
+		}).catch(err => console.log(err));
+	}
     return (
         <div className="container-fluid">
             <div className="row flex-nowrap">
