@@ -2,27 +2,59 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
 function Home() {
-  const [adminCount, setAdminCount] = useState()
-  const [employeeCount, setEmployeeCount] = useState()
-  const [salary, setSalary] = useState()
+  const [adminTotal, setAdminTotal] = useState(0)
+  const [employeeTotal, setemployeeTotal] = useState(0)
+  const [salaryTotal, setSalaryTotal] = useState(0)
+  const [admins, setAdmins] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:8081/adminCount')
-		.then(res => {
-			setAdminCount(res.data[0].admin)
-		}).catch(err => console.log(err));
-
-    axios.get('http://localhost:8081/employeeCount')
-		.then(res => {
-			setEmployeeCount(res.data[0].employee)
-		}).catch(err => console.log(err));
-
-    axios.get('http://localhost:8081/salary')
-		.then(res => {
-			setSalary(res.data[0].sumOfSalary)
-		}).catch(err => console.log(err));
+   
+    adminCount();
+    employeeCount();
+    salaryCount();
+    AdminRecords();
 
   } , [])
+
+      const AdminRecords = () => {        
+          axios.get('http://localhost:3000/auth/admin_records')
+          .then(result => {
+            if(result.data.Status) {
+              setAdmins(result.data.Result)
+            } else {
+              alert(result.data.Error)
+            }
+        })
+      }
+
+
+      
+
+      const adminCount = () => {
+        axios.get('http://localhost:3000/auth/admin_count')
+        .then(result => {
+          if(result.data.Status) {
+            setAdminTotal(result.data.Result[0].admin)
+          }
+      })
+    }
+    const employeeCount = () => {
+      axios.get('http://localhost:3000/auth/employee_count')
+      .then(result => {
+        if(result.data.Status) {
+          setemployeeTotal(result.data.Result[0].employee)
+        }
+    })
+  }
+  const salaryCount = () => {
+    axios.get('http://localhost:3000/auth/salary_count')
+    .then(result => {
+      if(result.data.Status) {
+        setSalaryTotal(result.data.Result[0].salaryOFEmp)
+      }
+  })
+}
+
   return (
     <div>
       <div className='p-3 d-flex justify-content-around mt-3'>
@@ -31,45 +63,61 @@ function Home() {
             <h4>Admin</h4>
           </div>
           <hr />
-          <div className=''>
-            <h5>Total: {adminCount}</h5>
+          <div className='d-flex justify-content-between'>
+            <h5>Total:</h5>
+            <h5>{adminTotal}</h5>
           </div>
         </div>
         <div className='px-3 pt-2 pb-3 border shadow-sm w-25'>
           <div className='text-center pb-1'>
-            <h4>Employee</h4>
+            <h4>Colaboradores</h4>
           </div>
           <hr />
-          <div className=''>
-            <h5>Total: {employeeCount}</h5>
+          <div className='d-flex justify-content-between'>
+            <h5>Total:</h5>
+            <h5>{employeeTotal}</h5>
           </div>
         </div>
         <div className='px-3 pt-2 pb-3 border shadow-sm w-25'>
           <div className='text-center pb-1'>
-            <h4>Salary</h4>
+            <h4>Salário</h4>
           </div>
           <hr />
-          <div className=''>
-            <h5>Total: {salary}</h5>
+          <div className='d-flex justify-content-between'>
+            <h5>Total:</h5>
+            <h5>R$ {salaryTotal}</h5>
           </div>
         </div>
       </div>
 
       {/* List of admin  */}
       <div className='mt-4 px-5 pt-3'>
-        <h3>List of Admins</h3>
+        <h3>Lista de Administradores</h3>
         <table className='table'>
           <thead>
             <tr>
               <th>Email</th>
-              <th>Action</th>
+              <th>Função</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Admin</td>
-              <td>Admin</td>
-            </tr>
+            {
+              admins.map(a => (
+                <tr>
+                  <td>{a.email}</td>                  
+                  <td>
+                  <button
+                    className="btn btn-info btn-sm me-2">
+                    Editar
+                  </button>        
+                  <button
+                    className="btn btn-warning btn-sm">
+                    Deletar
+                  </button>
+                  </td>
+                </tr>
+              ))
+            }
           </tbody>
         </table>
       </div>
